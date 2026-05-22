@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>자바스크립트 01</title>
+</head>
+
+<body>
+
+    <h1>자바스크립트 배우기</h1>
+    <button id="okbtn">확인</button>
+    <div class="box">내용 출력1</div>
+    <div class="box">내용 출력2</div>
+    <div class="box">내용 출력3</div>
+
+    <script>
+        // 브라우저에 직접 텍스트를 추가한다.
+        document.write("브라우저 화면에 내용 추가");
+        // alert("Hello World");
+        var result = prompt("열심히 하나요?");
+        console.log("결과:", result);
+        // DOM 객체 내부 속성 확인(DOM은 문서 객체 모델)
+        // 윗줄의 아이디는 자동 DOM 선택됨.
+        console.dir(okbtn);
+        // class 요소는 직접 지정한다. (전용 메서드가 있다.)
+        // HTMLCollection <-- 배열 같은 것
+        var boxList = document.getElementsByClassName("box");
+        console.dir(boxList);
+
+        var box1 = boxList[0];
+        console.log(box1);
+    </script>
+</body>
+</html>

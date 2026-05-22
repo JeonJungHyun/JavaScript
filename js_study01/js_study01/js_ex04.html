@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=<device-width>, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+
+        window.onload = function() {
+            var okbtn = document.querySelector("#okbtn");
+            var box = document.querySelector(".box");
+
+            // 1. id가 todo인 input의 DOM 선택
+            var todoInput = document.querySelector("#todo");
+
+            okbtn.onclick = function() {
+                // 버튼을 누르면 todo input의 값을 읽어 오기
+                // 2. todo의 value를 console에 출력하기
+                // 3. todo의 value를 box에 출력하기       
+                // 4. todo의 내용을 지우고 공백으로 초기화
+
+               console.dir(todoInput.value);
+               var newTodoValue = todoInput['value'];
+            //    box.innerHTML = "<li>" + newTodoValue + "</li>";
+               box.innerHTML += `<li>${newTodoValue} <button>Delete</li>`;
+               todoInput.value = "";
+               todoInput.focus();
+
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>버튼 이벤트 연습</h1>
+    할일 : <input type="text" id="todo" value="백화점 가기">
+    <button id="okbtn">확인</button>
+    <ul class="box"></ul> 
+
+</body>
+</html>

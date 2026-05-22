@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+
+        // 이벤트 핸들러
+        // window 객체가 모두 로드(onload) 되면 js 실행하라.
+        // console.dir(window);
+        // 익명 함수 = 이름 없는 함수
+        window.onload = function () {
+            // html 문서의 최하단에 있는것과 동일한 효과.
+            var okbtn = document.querySelector("#okbtn");
+            //console.dir(okbtn);
+
+            // 변수에 함수를 담을 수 있다.
+            // 함수를 참조 
+            var testFn = function () {
+                console.log("버튼 클릭했다!");
+                var a = 500;
+                console.log(a.valueOf());
+                document.bgColor = "yellow";
+                document.title = "내 홈페이지"
+            }
+            okbtn.onclick = function () {
+                // box에 새로운 내용을 출력
+                var box = document.querySelector(".box");
+                // box.innerText = "<h2>확인 하였습니다!</h2>";
+                box.innerHTML = "<h2>확인 하였습니다!</h2>";
+
+                testFn();
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <h1>버튼 이벤트 연습</h1>
+    <button id="okbtn">확인</button>
+    <div class="box">결과:</div>
+
+</body>
+
+</html>

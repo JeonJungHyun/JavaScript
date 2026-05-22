@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        // 할 일 목록 데이터를 저장하는 초기 배열 함수
+        var savedTodos = localStorage.getItem('myTodoList');
+        var todos = savedTodos ? JSON.parse(savedTodos) : [
+            {
+                "userId": 1,                // 작성자 회원 번호
+                "id": 1,                    // 할 일의 고유 번호
+                "title": "공부하기",         // 할 일 내용 
+                "completed": false         // 완료 여부 (기본값은 미완료 상태인 false)
+            },
+            {
+                "userId": 1,
+                "id": 2,
+                "title": "스터디하기",
+                "completed": false
+            },
+            {
+                "userId": 1,
+                "id": 3,
+                "title": "게임하기",
+                "completed": false
+            }
+        ];
+        // 새로 추가될 할 일의 고유번호로 사용될 변수 (id 값 자동증가)
+        var todoIdCnt = todos.length > 0 ? Math.max(...todos.map(t => t.id)) + 1 : 1;
+        // 화면에 리스트를 그려줄 <ul> 요소를 담을 변수(초기값 비어있음)
+        var todoList = null;
+
+        // 브라우저가 HTML 문서를 다 읽고 화면을 띄운 직후 자동 실행되는 함수
+        window.onload = function () {
+            // HTML에서 아이디가 'todo'인 입력창(<input>) 요소를 찾아서 변수에 저장
+            const todoInput = document.querySelector("#todo");
+            // HTML에서 아이디가 'addBtn'인 추가 버튼 요소를 찾아서 변수에 저장
+            const addBtn = document.querySelector("#addBtn");
+            // HTML에서 클래스가 'todoList'인 <ul> 요소를 찾아서 전역(window) 변수에 저장
+            window.todoList = document.querySelector(".todoList");
+            // 버튼을 누르면 todos에 새 item 추가
+            addBtn.onclick = function (e) {
+
+                if (todoInput.value.trim() === "") {
+                    alert("할 일을 입력해주세요!"); // 경고창 띄우기
+                    todoInput.value = "";          // 인풋창에 있던 공백 지우기
+                    todoInput.focus();             // 다시 입력할 수 있게 포커스 주기
+                    return;                        // ◀ 중요! 여기서 함수를 끝내서 아래 todos.push가 실행 안 되게 막음
+                }
+
+                todos.push({
+                    "userId": 2,                // 임의의 유저 번호 설정
+                    "id": todoIdCnt++,          // 현재 번호를 할당한 후, 다음 추가를 위해 번호를 1 증가시킴(4 -> 5)
+                    "title": todoInput.value,   // 입력창에 사용자가 타이핑한 실제 글자 지정
+                    "completed": false          // 처음 등록하는 일이므로 완료 상태는 false
+                });
+                todoInput.value = "";           // 할 일을 추가했으니 다음 입력을 위해 입력창 글자를 비움
+                todoInput.focus();              // 연속으로 등록할 수 있도록 입력창에 다시 커서 배치
+                
+
+                // 2. 새 item 추가 후 다시 그리기
+                drawList(todoList);
+            }
+                // 1. 파일로드 직후에 목록 그리기
+                drawList(todoList);
+        }
+
+            // 완료 버튼을 눌렀을 때 취소선을 긋고 데이터를 업뎃해줌
+            function complate(target) {
+                var key = Number(target.dataset['key']);  // 클릭한 버튼의 고유 id 가져오기
+                var item = todos.find(function(todo) {   // id가 같은 항목 탐색
+                    return todo.id === key;
+                });
+
+                if(item) {
+                    item.completed = !item.completed;   // 완료 상태를 반전
+                    drawList(todoList);                 // 화면 갱신 및 스토리지 자동 저장
+                }
+            }
+
+        // 삭제 버튼을 누르면 작동
+        function deleteHandler(target) {
+            var key = Number(target.dataset['key']);    // 클릭한 버튼의 고유 id 가져오기
+            // console.dir(key);
+            // key가 몇 번쨰 todo의 id와 일치하는지 찾기
+            var idx = todos.findIndex(function (item, i) {  // 배열에서 그 id가 몇 번째 칸에 있는지 인덱스 탐색
+                // console.log(item.id === key);
+                return item.id === key
+            });
+            // console.log("idx", idx)
+            // idx가 -1이 아니면 찾은 index가 존재한다.
+            // splice()함수로 해당 item 제거
+            if(idx != -1) {
+                todos.splice(idx, 1);       // 찾은 위치의 데이터 1개 삭제
+                // 삭제 후 목록 다시 갱신
+                drawList(todoList);         // 화면 갱신 및 스토리지 자동 저장
+            }
+        }
+
+        // 선언: window.onload 외부 선언 todoList를 전달 받아야 한다. 
+        function drawList(todoList) {
+            // todos 배열의 item을 todoList에 추가
+            todoList.innerHTML = "";    // 이전 리스트 비우기
+
+            todos.forEach(function (item, index) {  
+                // 완료 상태가 true면 글자에 취소선(line-through) 스타일을 주고, false면 빈 스타일을 줍니다.
+                var textStyle = item.completed ? "text-decoration: line-through; color: #aaa;" : "";
+                
+                todoList.innerHTML += `<li>
+                    <span style="${textStyle}"><strong>${item.id}</strong>: ${item.title}</span>
+                    <button data-key="${item.id}" onClick="complate(this)">완료</button>
+                    <button data-key="${item.id}" onclick="deleteHandler(this)">삭제</button>
+                </li>`;
+                });
+                // 화면을 새로 그릴 때마다 최신 todos 배열을 통째로 글자 상태로 변환하여 로컬 스토리지 창고에 저장합니다.
+                localStorage.setItem('myTodoList', JSON.stringify(todos));
+            }
+
+    </script>
+        
+</head>
+<body>
+    <h1>TodoList</h1>
+    할 일 : <input type="text" id="todo" placeholder="내용을 입력해주세요.">
+    <button id="addBtn">추가</button>
+    <ul class="todoList"></ul>
+</body>
+</html>
